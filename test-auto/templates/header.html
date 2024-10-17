@@ -1,0 +1,114 @@
+<!-- header.html -->
+<div class="taskbar">
+    <div class="left-menu">
+        <a href="{{ url_for('manager_dashboard') if session['role'] == 'Manager' else url_for('employee_dashboard') }}">Trang Chủ</a>
+        <a href="#">Bookings</a>
+        <a href="#">Notifications</a>
+    </div>
+    <div class="right-menu">
+        <!-- Settings Dropdown -->
+        <div class="settings-dropdown">
+            <button class="settings-icon" onclick="toggleSettingsMenu()">
+                <i class="fas fa-cog"></i>
+            </button>
+            <div class="settings-dropdown-content" id="settingsMenu">
+                <a href="{{ url_for('profile') }}">Profile</a>
+                <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function toggleSettingsMenu() {
+        var menu = document.getElementById("settingsMenu");
+        menu.classList.toggle("show");
+    }
+
+    window.onclick = function(event) {
+        if (!event.target.closest('.settings-icon') && !event.target.closest('.settings-dropdown-content')) {
+            var menu = document.getElementById("settingsMenu");
+            menu.classList.remove("show");
+        }
+    }
+</script>
+
+<style>
+    /* Taskbar styling */
+    .taskbar {
+        background-color: #333;
+        color: white;
+        padding: 10px 20px;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 1000;
+    }
+
+    .left-menu {
+        display: flex;
+        gap: 15px;
+    }
+
+    .left-menu a {
+        color: white;
+        text-decoration: none;
+        padding: 10px 15px;
+        transition: background-color 0.3s ease;
+    }
+
+    .left-menu a:hover {
+        background-color: #575757;
+    }
+
+    .right-menu {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+    }
+
+    .settings-dropdown {
+        position: relative;
+    }
+
+    .settings-icon {
+        font-size: 24px;
+        cursor: pointer;
+        padding: 10px;
+        background-color: transparent;
+        border: none;
+        color: white;
+        outline: none;
+    }
+
+    .settings-dropdown-content {
+        display: none;
+        position: absolute;
+        right: 0;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        z-index: 1;
+        border-radius: 4px;
+        overflow: hidden;
+    }
+
+    .settings-dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+
+    .settings-dropdown-content a:hover {
+        background-color: #f1f1f1;
+    }
+
+    .show {
+        display: block !important;
+    }
+</style>

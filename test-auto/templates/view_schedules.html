@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Employee Schedules</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 70px auto;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            color: #3498db;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #3498db;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .controls form {
+            display: flex;
+            align-items: center;
+            gap: 5px; /* Ensures spacing between form elements */
+        }
+
+        .controls label {
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .controls select {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #3498db;
+            background-color: #ffffff;
+            color: #3498db;
+            font-size: 14px;
+        }
+
+        .controls button {
+            padding: 5px 15px;
+            border-radius: 5px;
+            border: none;
+            background-color: #ffffff;
+            color: #3498db;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .controls button:hover {
+            background-color: #ffffff;
+            color: #3498db;
+            border: 1px solid #ffffff;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #3498db;
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        .date-label {
+            display: block;
+            margin-top: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .controls form {
+                flex-direction: row; /* Keep elements in a row on small screens */
+                gap: 5px;
+            }
+
+            table, th, td {
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="container">
+        <h1>Employee Schedules</h1>
+        <div class="controls">
+            <form method="GET" action="{{ url_for('view_schedules') }}">
+                <label for="year">Year:</label>
+                <select id="year" name="year">
+                    {% for year in range(2023, 2026) %}
+                        <option value="{{ year }}" {% if year == now.year %}selected{% endif %}>{{ year }}</option>
+                    {% endfor %}
+                </select>
+
+                <label for="week">Week:</label>
+                <select id="week" name="week">
+                    {% for week in weeks %}
+                        <option value="{{ week['value'] }}" {% if week['value'] == selected_week %}selected{% endif %}>
+                            {{ week['label'] }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Search</button>
+            </form>
+            <form method="POST" action="{{ url_for('preview_schedule') }}">
+                <input type="hidden" name="year" value="{{ selected_year }}">
+                <input type="hidden" name="week" value="{{ selected_week }}">
+                <button type="submit">Preview</button>
+            </form>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Monday<br><span class="date-label">{{ dates[0] }}</span></th>
+                    <th>Tuesday<br><span class="date-label">{{ dates[1] }}</span></th>
+                    <th>Wednesday<br><span class="date-label">{{ dates[2] }}</span></th>
+                    <th>Thursday<br><span class="date-label">{{ dates[3] }}</span></th>
+                    <th>Friday<br><span class="date-label">{{ dates[4] }}</span></th>
+                    <th>Saturday<br><span class="date-label">{{ dates[5] }}</span></th>
+                    <th>Sunday<br><span class="date-label">{{ dates[6] }}</span></th>
+                    <th>Created At</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for schedule in schedules %}
+                <tr>
+                    <td>{{ schedule.full_name }}</td>
+                    <td>{{ schedule.monday }}</td>
+                    <td>{{ schedule.tuesday }}</td>
+                    <td>{{ schedule.wednesday }}</td>
+                    <td>{{ schedule.thursday }}</td>
+                    <td>{{ schedule.friday }}</td>
+                    <td>{{ schedule.saturday }}</td>
+                    <td>{{ schedule.sunday }}</td>
+                    <td>{{ schedule.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Schedule</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .export-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: fit-content;
+        }
+
+        .export-button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Preview Schedule</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                    <th>Saturday</th>
+                    <th>Sunday</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for schedule in schedules %}
+                <tr>
+                    <td>{{ schedule.full_name }}</td>
+                    <td>{{ schedule.assigned_shifts[0] }}</td>
+                    <td>{{ schedule.assigned_shifts[1] }}</td>
+                    <td>{{ schedule.assigned_shifts[2] }}</td>
+                    <td>{{ schedule.assigned_shifts[3] }}</td>
+                    <td>{{ schedule.assigned_shifts[4] }}</td>
+                    <td>{{ schedule.assigned_shifts[5] }}</td>
+                    <td>{{ schedule.assigned_shifts[6] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="button-container">
+            <form method="POST" action="{{ url_for('export_excel') }}">
+                <input type="hidden" name="year" value="{{ selected_year }}">
+                <input type="hidden" name="week" value="{{ selected_week }}">
+                <button type="submit" class="export-button">Export Excel</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

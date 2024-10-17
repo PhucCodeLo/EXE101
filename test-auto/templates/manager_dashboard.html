@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ quản lý</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Taskbar styling */
+        .taskbar {
+            background-color: #333;
+            color: white;
+            padding: 10px 20px;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .left-menu {
+            display: flex;
+            gap: 15px;
+        }
+
+        .left-menu a {
+            color: white;
+            text-decoration: none;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+        }
+
+        .left-menu a:hover {
+            background-color: #575757;
+        }
+
+        .right-menu {
+            display: flex;
+            align-items: center;
+            margin-right: 25px;
+        }
+
+        /* Settings dropdown */
+        .settings-dropdown {
+            position: relative;
+        }
+
+        .settings-icon {
+            font-size: 24px;
+            cursor: pointer;
+            padding: 10px;
+            background-color: transparent;
+            border: none;
+            color: white;
+            outline: none;
+        }
+
+        .settings-dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .settings-dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s ease;
+        }
+
+        .settings-dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .show {
+            display: block !important;
+        }
+
+        .dashboard-container {
+            margin-top: 80px;
+            padding: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 30px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .quick-actions a {
+            background-color: #3498db;
+            color: white;
+            text-decoration: none;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            transition: background-color 0.3s ease, transform 0.2s;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quick-actions a:hover {
+            background-color: #2980b9;
+            transform: translateY(-5px);
+        }
+
+        .quick-actions i {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .profile-summary {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .profile-summary h3 {
+            margin-bottom: 15px;
+            color: #3498db;
+        }
+
+        .profile-info {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .profile-info div {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .profile-info label {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .profile-info span {
+            display: block;
+            margin-top: 5px;
+            color: #34495e;
+        }
+    </style>
+</head>
+<body>
+    <!-- Taskbar -->
+    <div class="taskbar">
+        <div class="left-menu">
+            <a href="{{ url_for('manager_dashboard') }}">Trang Chủ</a>
+            <a href="#">Bookings</a>
+            <a href="#">Notifications</a>
+        </div>
+        <div class="right-menu">
+            <!-- Settings Dropdown -->
+            <div class="settings-dropdown">
+                <button class="settings-icon" onclick="toggleSettingsMenu()">
+                    <i class="fas fa-cog"></i>
+                </button>
+                <div class="settings-dropdown-content" id="settingsMenu">
+                    <a href="{{ url_for('profile') }}">Profile</a>
+                    <a href="{{ url_for('logout') }}">Logout</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Dashboard container -->
+    <div class="dashboard-container">
+        <div class="welcome-section">
+            <h2>Welcome, {{ manager.full_name }}</h2>
+            <p>Manage your team, view schedules, and keep track of important tasks.</p>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+            <a href="{{ url_for('register_employee') }}">
+                <i class="fas fa-user-plus"></i> 
+                <p>Register New Employee</p>
+            </a>
+            <a href="{{ url_for('view_employees') }}">
+                <i class="fas fa-users"></i> 
+                <p>View Employee List</p>
+            </a>
+            <a href="{{ url_for('view_schedules') }}">
+                <i class="fas fa-calendar-alt"></i> 
+                <p>View Schedules</p>
+            </a>
+            <a href="#">
+                <i class="fas fa-upload"></i> 
+                <p>Upload Schedule</p>
+            </a>
+        </div>
+
+    <script>
+        function toggleSettingsMenu() {
+            var menu = document.getElementById("settingsMenu");
+            menu.classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.closest('.settings-icon') && !event.target.closest('.settings-dropdown-content')) {
+                var menu = document.getElementById("settingsMenu");
+                menu.classList.remove("show");
+            }
+        }
+    </script>
+</body>
+</html>

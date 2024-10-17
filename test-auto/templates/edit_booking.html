@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Weekly Schedule</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .edit-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 80px auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #3498db;
+            margin-bottom: 20px;
+        }
+        .notice {
+            background-color: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .day-card {
+            background: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .day-card h3 {
+            margin: 0;
+            font-size: 1.1em;
+            color: #3498db;
+        }
+        .date-label {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 5px;
+        }
+        .day-card input[type="text"] {
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-top: 10px;
+            font-size: 0.95em;
+            width: 100%;
+        }
+        button {
+            padding: 10px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div class="edit-container">
+        <h1>Edit Weekly Schedule</h1>
+        <div class="notice">You can edit your schedule before 24:00 on Thursday (GMT+7).</div>
+        <form action="{{ url_for('edit_booking', schedule_id=schedule_id) }}" method="POST">
+            {% for day, date in week_data %}
+                <div class="day-card">
+                    <h3>{{ day }}</h3>
+                    <div class="date-label">{{ date }}</div>
+                    <input type="text" id="{{ day.lower() }}" name="{{ day.lower() }}" value="{{ schedule[day.lower()] }}" placeholder="e.g., 9 AM - 5 PM or OFF">
+                </div>
+            {% endfor %}
+            <button type="submit">Update Schedule</button>
+        </form>
+    </div>
+</body>
+</html>
